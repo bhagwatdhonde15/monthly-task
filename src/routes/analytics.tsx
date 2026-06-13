@@ -15,12 +15,12 @@ import {
   YAxis,
 } from "recharts";
 import {
-  completionKey,
   currentStreak,
   daysInMonth,
   taskCompletionCount,
   useAppStore,
 } from "@/lib/store";
+
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
