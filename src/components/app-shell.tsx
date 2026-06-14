@@ -2,6 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { Home, Calendar, ListChecks, BarChart3, Settings as SettingsIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { useAppStore } from "@/lib/store";
+import { useReminders } from "@/lib/reminders";
 
 const tabs = [
   { to: "/dashboard", label: "Home", icon: Home },
@@ -23,6 +24,7 @@ export function AppShell({
   children: ReactNode;
 }) {
   const state = useAppStore();
+  useReminders();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
