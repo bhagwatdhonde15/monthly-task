@@ -16,7 +16,9 @@ import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ArchiveIndexRouteImport } from './routes/archive.index'
 import { Route as ArchiveMonthYearRouteImport } from './routes/archive.$month.$year'
+import { Route as ArchiveCompareABRouteImport } from './routes/archive.compare.$a.$b'
 
 const TasksRoute = TasksRouteImport.update({
   id: '/tasks',
@@ -53,9 +55,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArchiveIndexRoute = ArchiveIndexRouteImport.update({
+  id: '/archive/',
+  path: '/archive/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ArchiveMonthYearRoute = ArchiveMonthYearRouteImport.update({
   id: '/archive/$month/$year',
   path: '/archive/$month/$year',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArchiveCompareABRoute = ArchiveCompareABRouteImport.update({
+  id: '/archive/compare/$a/$b',
+  path: '/archive/compare/$a/$b',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -67,7 +79,9 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/settings': typeof SettingsRoute
   '/tasks': typeof TasksRoute
+  '/archive/': typeof ArchiveIndexRoute
   '/archive/$month/$year': typeof ArchiveMonthYearRoute
+  '/archive/compare/$a/$b': typeof ArchiveCompareABRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -77,7 +91,9 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/settings': typeof SettingsRoute
   '/tasks': typeof TasksRoute
+  '/archive': typeof ArchiveIndexRoute
   '/archive/$month/$year': typeof ArchiveMonthYearRoute
+  '/archive/compare/$a/$b': typeof ArchiveCompareABRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -88,7 +104,9 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/settings': typeof SettingsRoute
   '/tasks': typeof TasksRoute
+  '/archive/': typeof ArchiveIndexRoute
   '/archive/$month/$year': typeof ArchiveMonthYearRoute
+  '/archive/compare/$a/$b': typeof ArchiveCompareABRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -100,7 +118,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/settings'
     | '/tasks'
+    | '/archive/'
     | '/archive/$month/$year'
+    | '/archive/compare/$a/$b'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -110,7 +130,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/settings'
     | '/tasks'
+    | '/archive'
     | '/archive/$month/$year'
+    | '/archive/compare/$a/$b'
   id:
     | '__root__'
     | '/'
@@ -120,7 +142,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/settings'
     | '/tasks'
+    | '/archive/'
     | '/archive/$month/$year'
+    | '/archive/compare/$a/$b'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -131,7 +155,9 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   SettingsRoute: typeof SettingsRoute
   TasksRoute: typeof TasksRoute
+  ArchiveIndexRoute: typeof ArchiveIndexRoute
   ArchiveMonthYearRoute: typeof ArchiveMonthYearRoute
+  ArchiveCompareABRoute: typeof ArchiveCompareABRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -185,11 +211,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/archive/': {
+      id: '/archive/'
+      path: '/archive'
+      fullPath: '/archive/'
+      preLoaderRoute: typeof ArchiveIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/archive/$month/$year': {
       id: '/archive/$month/$year'
       path: '/archive/$month/$year'
       fullPath: '/archive/$month/$year'
       preLoaderRoute: typeof ArchiveMonthYearRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/archive/compare/$a/$b': {
+      id: '/archive/compare/$a/$b'
+      path: '/archive/compare/$a/$b'
+      fullPath: '/archive/compare/$a/$b'
+      preLoaderRoute: typeof ArchiveCompareABRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -203,18 +243,10 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   SettingsRoute: SettingsRoute,
   TasksRoute: TasksRoute,
+  ArchiveIndexRoute: ArchiveIndexRoute,
   ArchiveMonthYearRoute: ArchiveMonthYearRoute,
+  ArchiveCompareABRoute: ArchiveCompareABRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
