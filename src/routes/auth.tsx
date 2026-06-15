@@ -1,8 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { actions, useAppStore } from "@/lib/store";
+import { useAppStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Sparkles, TrendingUp } from "lucide-react";
+import { lovable } from "@/integrations/lovable";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -20,20 +22,28 @@ function AuthPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (state.user) navigate({ to: "/dashboard", replace: true });
+    if (state.user?.id) navigate({ to: "/dashboard", replace: true });
   }, [state.user, navigate]);
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     setLoading(true);
-    // Mock Google sign-in.
-    setTimeout(() => {
-      actions.signIn({
-        name: "Alex Morgan",
-        email: "alex@example.com",
-        avatarUrl: undefined,
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin + "/auth",
       });
-      navigate({ to: "/dashboard", replace: true });
-    }, 600);
+      if (result.error) {
+        toast.error("Sign-in failed", { description: String(result.error.message ?? result.error) });
+        setLoading(false);
+        return;
+      }
+      if (result.redirected) return; // browser is navigating away
+      // Tokens already set; the auth-sync hook will populate the store and redirect.
+    } catch (err) {
+      toast.error("Sign-in failed", {
+        description: err instanceof Error ? err.message : "Unknown error",
+      });
+      setLoading(false);
+    }
   };
 
   return (
