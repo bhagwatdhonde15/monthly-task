@@ -72,7 +72,9 @@ function SettingsPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => {
+              onClick={async () => {
+                const { supabase } = await import("@/integrations/supabase/client");
+                await supabase.auth.signOut();
                 actions.signOut();
                 toast.success("Signed out");
                 navigate({ to: "/auth" });

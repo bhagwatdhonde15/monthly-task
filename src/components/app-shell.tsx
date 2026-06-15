@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Calendar, ListChecks, BarChart3, Settings as SettingsIcon } from "lucide-react";
+import { Home, Calendar, ListChecks, BarChart3, MessageSquare, Settings as SettingsIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { useAppStore } from "@/lib/store";
 import { useReminders } from "@/lib/reminders";
@@ -9,6 +9,7 @@ const tabs = [
   { to: "/calendar", label: "Calendar", icon: Calendar },
   { to: "/tasks", label: "Tasks", icon: ListChecks },
   { to: "/analytics", label: "Stats", icon: BarChart3 },
+  { to: "/feedback", label: "Community", icon: MessageSquare },
   { to: "/settings", label: "Profile", icon: SettingsIcon },
 ] as const;
 
