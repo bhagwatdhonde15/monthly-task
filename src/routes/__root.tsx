@@ -131,10 +131,18 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <AuthSyncBoundary />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <Toaster position="top-center" richColors closeButton />
     </QueryClientProvider>
   );
+}
+
+function AuthSyncBoundary() {
+  // Imported lazily so the supabase client only initializes in the browser.
+  const { useSupabaseAuthSync } = require("@/lib/auth-sync") as typeof import("@/lib/auth-sync");
+  useSupabaseAuthSync();
+  return null;
 }
 
