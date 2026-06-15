@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
+import { useSupabaseAuthSync } from "@/lib/auth-sync";
 
 
 function NotFoundComponent() {
@@ -140,8 +141,6 @@ function RootComponent() {
 }
 
 function AuthSyncBoundary() {
-  // Imported lazily so the supabase client only initializes in the browser.
-  const { useSupabaseAuthSync } = require("@/lib/auth-sync") as typeof import("@/lib/auth-sync");
   useSupabaseAuthSync();
   return null;
 }
